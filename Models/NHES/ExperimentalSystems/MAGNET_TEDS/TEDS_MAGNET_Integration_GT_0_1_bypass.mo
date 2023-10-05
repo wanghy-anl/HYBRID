@@ -17,7 +17,7 @@ protected
     m_flow_start=0.84)
     annotation (Placement(transformation(extent={{-256,-356},{-236,-336}})));
 protected
-  NHES.ExperimentalSystems.MAGNET.Data.Data_base_An data
+  NHES.ExperimentalSystems.MAGNET.Data.Data_base_An data(eta_mech=0.4)
     annotation (Placement(transformation(extent={{-256,-290},{-236,-270}})));
 protected
   package Medium = Modelica.Media.IdealGases.SingleGases.N2;//TRANSFORM.Media.ExternalMedia.CoolProp.Nitrogen;
@@ -784,14 +784,19 @@ public
     T_hot_design=598.15,
     T_cold_design=498.15)
     annotation (Placement(transformation(extent={{362,2},{396,36}})));
-  Modelica.Blocks.Sources.CombiTimeTable TEDS_Heat_Demand_kW(table=[0.0,100;
-        1800,100; 3600,100; 4800,100; 7200,100; 9000,100; 9999.9,100; 10000,10;
-        12200,10; 14400,10; 18000,30; 22000,30; 24500,50; 30000,50; 33000,50;
-        45000,50; 48000,0; 50000,0], startTime=0)
+  Modelica.Blocks.Sources.Pulse          TEDS_Heat_Demand_kW(
+    amplitude=-70,
+    period=7200,
+    offset=80,
+    startTime=1e4)
     annotation (Placement(transformation(extent={{282,-158},{296,-144}})));
   Modelica.Blocks.Math.Gain TEDS_Heat_Demand_W(k=1000)
     annotation (Placement(transformation(extent={{306,-156},{316,-146}})));
-  Modelica.Blocks.Sources.Constant PCU_Elec_Demand_kW(k=30)
+  Modelica.Blocks.Sources.Pulse    PCU_Elec_Demand_kW(
+    amplitude=0,
+    period=7200,
+    offset=10,
+    startTime=3600)
     annotation (Placement(transformation(extent={{282,-186},{296,-172}})));
   Modelica.Blocks.Math.Gain PCU_Elec_Demand_W(k=1000)
     annotation (Placement(transformation(extent={{306,-184},{316,-174}})));
@@ -1132,10 +1137,10 @@ equation
 
   connect(sensorSubBus.T_discharge_inlet, T_Dch_In.T) annotation (Line(
       points={{303,-22},{360,-22},{360,-220},{388,-220},{388,-219.5},{415.94,-219.5}},
-
       color={111,216,99},
       pattern=LinePattern.Dash,
       thickness=0.5));
+
   connect(sensorSubBus.T_charge_outlet, T_Chg_Out.T) annotation (Line(
       points={{303,-22},{536,-22},{536,-219},{491.6,-219}},
       color={111,216,99},
@@ -1278,10 +1283,6 @@ equation
       color={239,82,82},
       pattern=LinePattern.Dash,
       thickness=0.5));
-  connect(TEDS_Heat_Demand_kW.y[1],TEDS_Heat_Demand_W. u)
-    annotation (Line(points={{296.7,-151},{305,-151}}, color={0,0,127}));
-  connect(PCU_Elec_Demand_kW.y,PCU_Elec_Demand_W. u)
-    annotation (Line(points={{296.7,-179},{305,-179}}, color={0,0,127}));
   connect(sensorSubBus,
     control_System_Therminol_4_element_all_modes_MAGNET_GT_dyn_0_1_HW.sensorBus)
     annotation (Line(
@@ -1401,7 +1402,6 @@ equation
           -276},{314,-276},{314,-290},{328,-290}}, color={0,127,255}));
   connect(sensorSubBus.Discharge_FlowRate, FM_201.m_flow) annotation (Line(
       points={{303,-22},{360,-22},{360,-240},{388,-240},{388,-239},{415.76,-239}},
-
       color={111,216,99},
       pattern=LinePattern.Dash,
       thickness=0.5), Text(
@@ -1409,6 +1409,11 @@ equation
       index=-1,
       extent={{-6,3},{-6,3}},
       horizontalAlignment=TextAlignment.Right));
+
+  connect(PCU_Elec_Demand_kW.y, PCU_Elec_Demand_W.u)
+    annotation (Line(points={{296.7,-179},{305,-179}}, color={0,0,127}));
+  connect(TEDS_Heat_Demand_kW.y, TEDS_Heat_Demand_W.u)
+    annotation (Line(points={{296.7,-151},{305,-151}}, color={0,0,127}));
   annotation (experiment(
       StopTime=50400,
       Interval=10,

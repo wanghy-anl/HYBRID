@@ -7852,15 +7852,15 @@ package Magnet_TEDS
     parameter SI.MassFlowRate m_heater_max= 2; //Just a large number. Not ideal for control, but should work to start off the system.
 
     SI.MassFlowRate m_bop_heater_demand; //Demand through Valve 2
-    SI.MassFlowRate m_bop_heater_demand_graph;
+
     SI.MassFlowRate m_MAGNET_left; // mass flow left on the MAGNET side not needed
     SI.MassFlowRate m_tes_discharged;
     SI.MassFlowRate m_tes_charged;
     //SI.Power Q_TES_discharge;
-    SI.Power Heat_needed_GT;
+
     SI.Power Heat_demand;
     SI.Power TES_Load;
-    SI.MassFlowRate m_MAGNET_GT; // mass flow needed from MAGNET to produce electricity
+
     SI.SpecificHeatCapacity Cp = Medium.specificHeatCapacityCp(mediums.state);
 
     parameter SI.Pressure p_atm = 1e5;
@@ -8030,6 +8030,8 @@ package Magnet_TEDS
         annotation (Placement(transformation(extent={{138,14},{158,34}})));
       Modelica.Blocks.Sources.RealExpression PV_009(y=1 - PV012.y)
         annotation (Placement(transformation(extent={{138,-4},{160,18}})));
+      Modelica.Blocks.Sources.Constant const8(k=0.2)
+        annotation (Placement(transformation(extent={{158,-50},{168,-40}})));
     protected
       Modelica.Blocks.Sources.Constant Tin_vc_design(k=data.T_rp_vc)
         annotation (Placement(transformation(extent={{10,-178},{22,-166}})));
@@ -8051,72 +8053,51 @@ package Magnet_TEDS
         Heat_demand = TEDS_Heat_Load_Demand;
       end if;
 
-      // TES charging/discharging power demand. Negative value means discharging
-      TES_Load = -(Heat_demand - HX_heat.y);
+      // TES charging/discharging power demand. Negative value means charging
+      TES_Load = Heat_demand - HX_heat.y;
 
-      // variables that were never used again
-      m_bop_heater_demand_graph = Heat_demand/(Cp*(T_hot_design - T_cold_design));
 
     algorithm
 
-    //   if clock.y < Delay_Start then
-    //     m_tes_discharged := 0;
-    //   else
-    //     m_tes_discharged:= (TEDS_Heat_Load_Demand - HX_heat.y)/(Cp*(T_hot_design - T_cold_design))
-    //     "amount of TES flow rate needed for discharge";
-    //   end if;
-
       // Theoretical value for discharge flowrate: m=Q/(c*deltaT). Value can be +/-
-      m_tes_discharged := -1*TES_Load/(Cp*(T_hot_design - T_cold_design));
+      m_tes_discharged := TES_Load/(Cp*(T_hot_design - T_cold_design));
 
       // Theoretical value for charging flowrate: m=Q/(c*deltaT). Value can be + or 0
-      // ??? QUESTION MARK ??? : Why the definition is different from m_tes_discharged
-      if HX_heat.y > TEDS_Heat_Load_Demand then
-        m_tes_charged:= (HX_heat.y-TEDS_Heat_Load_Demand)/(Cp*(T_hot_design - T_cold_design));
-      else
-        m_tes_charged:= 0;
-      end if;
+      m_tes_charged := -1*TES_Load/(Cp*(T_hot_design - T_cold_design));
 
       // Theoretical value for Glycol_HX hot side flowrate: m=Q/(c*deltaT)
       m_bop_heater_demand :=TEDS_Heat_Load_Demand/(Cp*(T_hot_design - T_cold_design));
 
-      // ?? QUESTION MARK ??? : data.eta_mech = 0.98? Such a high heat to mechanical efficiency?!
-      Heat_needed_GT :=Gas_Turbine_Elec_Demand/data.eta_mech;
-
-      // "m_MAGNET_GT" is never used again.
-      // Plus, the Tin_MT_HX.y and Tout_MT_HX.y are the inlet/outlet temperature of "MAGNET_TEDS_simpleHX1".
-      // The temperature should be measured from the inlet/outlet of turbine-compressor combination.
-      m_MAGNET_GT := Heat_needed_GT/(Medium_MAGNET.specificEnthalpy_pT(p_MAGNET,Tin_MT_HX.y) - Medium_MAGNET.specificEnthalpy_pT(p_MAGNET,Tout_MT_HX.y));
 
       // the nitrogen flow rate in "MAGNET_TEDS_simpleHX1"
       m_MAGNET_left := mflow_inside_MAGNET.y-mf_vc_GT.y;//(m_MAGNET_needed);
 
-    Error1_MAGNET := ((m_MAGNET_left) - mf_MT_HX.y)/mflow_inside_MAGNET.y;
+      Error1_MAGNET := ((m_MAGNET_left) - mf_MT_HX.y)/mflow_inside_MAGNET.y;
 
-    //Valve 2 Used for HeaterBOPDemand
+      //Valve 2 Used for HeaterBOPDemand
 
-    Error2 :=(m_bop_heater_demand - Heater_BOP_mass_flow.y)/m_tes_max;
+      Error2 :=(m_bop_heater_demand - Heater_BOP_mass_flow.y)/m_tes_max;
 
-    // Will need to change this to take into account T_hot_sensor and T_Cold_Sensor.
-    // Valve 3 used for TES discharge
+      // Will need to change this to take into account T_hot_sensor and T_Cold_Sensor.
+      // Valve 3 used for TES discharge
 
-    if m_tes_discharged > 0 and delay(storage_button,15) == 0 then
-      Error3 :=(m_tes_discharged - Discharge_mass_flow_sensor.y)/m_tes_max;
+      if m_tes_discharged > 0 and delay(storage_button,15) == 0 then
+        Error3 :=(m_tes_discharged - Discharge_mass_flow_sensor.y)/m_tes_max;
+        else
+        Error3 :=-1;
+      end if;
+
+      //Valve 1 used for TES Charge
+      if m_tes_charged > 0.001 then // charging
+        Error1 :=(m_tes_charged - Charge_mass_flow_sensor.y)/m_tes_max;
       else
-      Error3 :=-1;
-    end if;
-
-    //Valve 1 used for TES Charge
-    if m_tes_charged > 0.001 then // charging
-      Error1 :=(m_tes_charged - Charge_mass_flow_sensor.y)/m_tes_max;
-    else
-      Error1 :=-1;
-      //storage_button :=0;
-    end if;
+        Error1 :=-1;
+        //storage_button :=0;
+      end if;
 
       //Designation of the TEDS valve control algorithms.
 
-     //Interlock System for the valves.
+      //Interlock System for the valves.
       if m_tes_charged > 0.001 then
         Error4 :=1;
         storage_button :=1;
@@ -8131,7 +8112,7 @@ package Magnet_TEDS
         Error5 :=-1;
       end if;
 
-    // Main Heater Mass Flow Control
+      // Main Heater Mass Flow Control
       if m_tes_charged > 0.001 or m_bop_heater_demand > 0.001 then // makes sure that valve 6 is open when there is extra heat from MAGNET
         Error6 :=1; //(abs(m_heater_demand) - Heater_flowrate_sensor.y)/m_heater_max;
       else
@@ -8199,11 +8180,6 @@ package Magnet_TEDS
 
       connect(actuatorBus.MAGNET_valve3_opening, firstOrder8.y) annotation (Line(
           points={{70,-215},{70,-214},{180,-214},{180,-68},{50.6,-68}},
-          color={239,82,82},
-          pattern=LinePattern.Dash,
-          thickness=0.5));
-      connect(actuatorBus.MAGNET_valve_opening, firstOrder6.y) annotation (Line(
-          points={{70,-215},{70,-214},{180,-214},{180,-22},{170.6,-22}},
           color={239,82,82},
           pattern=LinePattern.Dash,
           thickness=0.5));
@@ -8400,6 +8376,12 @@ package Magnet_TEDS
           thickness=0.5));
       connect(actuatorBus.PV009, PV_009.y) annotation (Line(
           points={{70,-215},{70,-214},{180,-214},{180,7},{161.1,7}},
+          color={239,82,82},
+          pattern=LinePattern.Dash,
+          thickness=0.5));
+      connect(actuatorBus.MAGNET_valve_opening, const8.y) annotation (Line(
+          points={{70,-215},{70,-214},{180,-214},{180,-46},{172,-46},{172,-45},{168.5,
+              -45}},
           color={239,82,82},
           pattern=LinePattern.Dash,
           thickness=0.5));
