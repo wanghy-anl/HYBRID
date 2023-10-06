@@ -404,7 +404,7 @@ public
   TRANSFORM.Fluid.Valves.ValveLinear valve_vc_GT(
     redeclare package Medium = Medium,
     dp_nominal=3000,
-    m_flow_nominal=1) annotation (Placement(transformation(
+    m_flow_nominal=2) annotation (Placement(transformation(
         extent={{-6,6},{6,-6}},
         rotation=90,
         origin={-214,-124})));
@@ -795,7 +795,7 @@ public
   Modelica.Blocks.Sources.Pulse    PCU_Elec_Demand_kW(
     amplitude=0,
     period=7200,
-    offset=10,
+    offset=5,
     startTime=3600)
     annotation (Placement(transformation(extent={{282,-186},{296,-172}})));
   Modelica.Blocks.Math.Gain PCU_Elec_Demand_W(k=1000)
@@ -1129,28 +1129,7 @@ equation
     annotation (Line(points={{418,-94},{418,-100}}, color={0,127,255}));
   connect(FM_201.port_a, T_Dch_In.port_a)
     annotation (Line(points={{419,-230},{419,-229}}, color={0,127,255}));
-  connect(sensorSubBus.T_discharge_outlet, T_Dch_Out.T) annotation (Line(
-      points={{303,-22},{536,-22},{536,-110},{491.6,-110}},
-      color={111,216,99},
-      pattern=LinePattern.Dash,
-      thickness=0.5));
 
-  connect(sensorSubBus.T_discharge_inlet, T_Dch_In.T) annotation (Line(
-      points={{303,-22},{360,-22},{360,-220},{388,-220},{388,-219.5},{415.94,-219.5}},
-      color={111,216,99},
-      pattern=LinePattern.Dash,
-      thickness=0.5));
-
-  connect(sensorSubBus.T_charge_outlet, T_Chg_Out.T) annotation (Line(
-      points={{303,-22},{536,-22},{536,-219},{491.6,-219}},
-      color={111,216,99},
-      pattern=LinePattern.Dash,
-      thickness=0.5));
-  connect(sensorSubBus.T_charge_inlet, T_Chg_In.T) annotation (Line(
-      points={{303,-22},{360,-22},{360,-110},{414.4,-110}},
-      color={111,216,99},
-      pattern=LinePattern.Dash,
-      thickness=0.5));
   connect(sensorSubBus.Charging_flowrate, FM_202.m_flow) annotation (Line(
       points={{303,-22},{536,-22},{536,-256},{491.6,-256},{491.6,-255}},
       color={111,216,99},
@@ -1187,13 +1166,8 @@ equation
     annotation (Line(points={{349,-52},{362,-52}}, color={0,127,255}));
   connect(TC_003a.port_b, pipe2.port_a)
     annotation (Line(points={{386,-52},{392,-52}}, color={0,127,255}));
-  connect(sensorSubBus.Tin_TEDSide, TC_002.T) annotation (Line(
-      points={{303,-22},{232.04,-22},{232.04,-167}},
-      color={111,216,99},
-      pattern=LinePattern.Dash,
-      thickness=0.5));
   connect(MAGNET_TEDS_simpleHX1.port_b1, valve_TEDS_rp.port_a) annotation (Line(
-        points={{246,-78},{0,-78},{0,-72},{4.44089e-16,-72},{4.44089e-16,-84}},
+        points={{246,-78},{0,-78},{0,-84}},
         color={0,127,255}));
   connect(TC_002.port_b, MAGNET_TEDS_simpleHX1.port_a2) annotation (Line(points
         ={{236,-155},{236,-86},{246,-86}}, color={0,127,255}));
@@ -1217,16 +1191,6 @@ equation
       thickness=0.5));
   connect(sensorSubBus.MAGNET_flow, m_flow_vc_TEDS.m_flow) annotation (Line(
       points={{303,-22},{-84,-22},{-84,-90},{-67.6,-90}},
-      color={111,216,99},
-      pattern=LinePattern.Dash,
-      thickness=0.5));
-  connect(sensorSubBus.MAGNET_TEDS_HX_Tin, T_vc_TEDS.T) annotation (Line(
-      points={{303,-22},{-62,-22},{-62,-112}},
-      color={111,216,99},
-      pattern=LinePattern.Dash,
-      thickness=0.5));
-  connect(sensorSubBus.MAGNET_TEDS_HX_Tout, pT_TEDS_rp.T) annotation (Line(
-      points={{303,-22},{32,-22},{32,-118},{-2,-118}},
       color={111,216,99},
       pattern=LinePattern.Dash,
       thickness=0.5));

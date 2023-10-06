@@ -7962,7 +7962,7 @@ package Magnet_TEDS
         initType=Modelica.Blocks.Types.Init.SteadyState,
         y_start=1,
         controllerType=Modelica.Blocks.Types.SimpleController.PI,
-        yMin=0)
+        yMin=0.01)
         annotation (Placement(transformation(extent={{120,-100},{134,-86}})));
       Modelica.Blocks.Continuous.FirstOrder firstOrder7(
         T=5,
@@ -7986,16 +7986,10 @@ package Magnet_TEDS
         annotation (Placement(transformation(extent={{-170,-10},{-146,10}})));
       TRANSFORM.Blocks.RealExpression Tout_TEDS_side "Used in the Code section. "
         annotation (Placement(transformation(extent={{-170,-26},{-146,-6}})));
-      TRANSFORM.Blocks.RealExpression Tin_MT_HX "Used in the Code section. "
-        annotation (Placement(transformation(extent={{-170,-42},{-146,-22}})));
-      TRANSFORM.Blocks.RealExpression Tout_MT_HX "Used in the Code section. "
-        annotation (Placement(transformation(extent={{-170,-58},{-146,-38}})));
       TRANSFORM.Blocks.RealExpression mf_MT_HX "Used in the Code section. "
         annotation (Placement(transformation(extent={{-170,-74},{-146,-54}})));
       TRANSFORM.Blocks.RealExpression HX_heat "Used in the Code section. "
         annotation (Placement(transformation(extent={{-170,-90},{-146,-70}})));
-      TRANSFORM.Blocks.RealExpression Tin_TEDside "Used in the Code section. "
-        annotation (Placement(transformation(extent={{-170,-106},{-146,-86}})));
       TRANSFORM.Blocks.RealExpression mf_vc_GT "Used in the Code section. "
         annotation (Placement(transformation(extent={{-170,-122},{-146,-102}})));
       TRANSFORM.Blocks.RealExpression GT_Power_sensor "Used in the Code section. "
@@ -8297,16 +8291,6 @@ package Magnet_TEDS
           color={111,216,99},
           pattern=LinePattern.Dash,
           thickness=0.5));
-      connect(sensorBus.MAGNET_TEDS_HX_Tin, Tin_MT_HX.u) annotation (Line(
-          points={{-64,-215},{-180,-215},{-180,-32},{-172.4,-32}},
-          color={111,216,99},
-          pattern=LinePattern.Dash,
-          thickness=0.5));
-      connect(sensorBus.MAGNET_TEDS_HX_Tout, Tout_MT_HX.u) annotation (Line(
-          points={{-64,-215},{-180,-215},{-180,-48},{-172.4,-48}},
-          color={111,216,99},
-          pattern=LinePattern.Dash,
-          thickness=0.5));
       connect(sensorBus.MAGNET_flow, mf_MT_HX.u) annotation (Line(
           points={{-64,-215},{-180,-215},{-180,-64},{-172.4,-64}},
           color={111,216,99},
@@ -8314,11 +8298,6 @@ package Magnet_TEDS
           thickness=0.5));
       connect(sensorBus.Heater_Input, HX_heat.u) annotation (Line(
           points={{-64,-215},{-180,-215},{-180,-80},{-172.4,-80}},
-          color={111,216,99},
-          pattern=LinePattern.Dash,
-          thickness=0.5));
-      connect(sensorBus.Tin_TEDSide, Tin_TEDside.u) annotation (Line(
-          points={{-64,-215},{-180,-215},{-180,-96},{-172.4,-96}},
           color={111,216,99},
           pattern=LinePattern.Dash,
           thickness=0.5));
