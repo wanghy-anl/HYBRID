@@ -21155,15 +21155,20 @@ depending rocks packing scheme";
           iconTransformation(extent={{-112,-10},{-92,10}})));
   initial equation
 
-  for i in 1:integer(nodes*1.33/2) loop
-    Tf[i]=250+273.15;
-    Tr[i]=250+273.15;
-  end for;
-  for i in integer(nodes*1.33/2)+1:nodes loop
+  // for i in 1:integer(nodes*1.33/2) loop
+  //   Tf[i]=250+273.15;
+  //   Tr[i]=250+273.15;
+  // end for;
+  // for i in integer(nodes*1.33/2)+1:nodes loop
+  //
+  //   Tf[i]=250+273.15;
+  //   Tr[i]=250+273.15;
+  //
+  // end for;
 
-    Tf[i]=250+273.15;
-    Tr[i]=250+273.15;
-
+  for i in 1:nodes loop
+    Tf[i]=350+273.15-(350-250)/nodes*i;
+    Tr[i]=350+273.15-(350-250)/nodes*i;
   end for;
 
   // Start of the actual Thermocline Equation Set**********************

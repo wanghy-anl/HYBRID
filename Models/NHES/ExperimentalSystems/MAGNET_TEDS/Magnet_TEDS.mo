@@ -7731,31 +7731,28 @@ package Magnet_TEDS
       Modelica.Blocks.Continuous.LimPID PIDV1(
         yMax=1,
         controllerType=Modelica.Blocks.Types.SimpleController.PI,
-        k=0.005*0.007*3600,
-        Ti=3.5,
+        k=0.05*0.007*3600,
+        Ti=1,
         initType=Modelica.Blocks.Types.Init.NoInit,
         y_start=1,
         yMin=0.0)
         annotation (Placement(transformation(extent={{134,182},{148,196}})));
-      Modelica.Blocks.Sources.Constant const(k=0)
-        annotation (Placement(transformation(extent={{118,174},{128,184}})));
       Modelica.Blocks.Continuous.FirstOrder firstOrder(
-        T=5,
+        T=0.1,
         initType=Modelica.Blocks.Types.Init.NoInit,
         y_start=0)
         annotation (Placement(transformation(extent={{160,182},{174,196}})));
       Modelica.Blocks.Continuous.LimPID PIDV2(
         yMax=1,
-        k=0.0007*3600,
-        Ti=3.5,
+        k=0.001*3600,
+        Ti=1,
         initType=Modelica.Blocks.Types.Init.NoInit,
         y_start=1,
-        controllerType=Modelica.Blocks.Types.SimpleController.PI,
-        yMin=0.0)
+        controllerType=Modelica.Blocks.Types.SimpleController.P,
+        yMin=1e-2)
         annotation (Placement(transformation(extent={{52,158},{66,172}})));
-      Modelica.Blocks.Sources.Constant const1(k=0)
-        annotation (Placement(transformation(extent={{32,150},{42,160}})));
-      Modelica.Blocks.Continuous.FirstOrder firstOrder1(T=5,
+      Modelica.Blocks.Continuous.FirstOrder firstOrder1(
+        T=0.1,
         initType=Modelica.Blocks.Types.Init.NoInit,
         y_start=1)
         annotation (Placement(transformation(extent={{80,158},{94,172}})));
@@ -7767,8 +7764,6 @@ package Magnet_TEDS
         initType=Modelica.Blocks.Types.Init.NoInit,
         y_start=1,
         yMin=0.0) annotation (Placement(transformation(extent={{136,134},{150,148}})));
-      Modelica.Blocks.Sources.Constant const2(k=0)
-        annotation (Placement(transformation(extent={{118,126},{128,136}})));
       Modelica.Blocks.Continuous.FirstOrder firstOrder2(
         T=2,
         initType=Modelica.Blocks.Types.Init.NoInit,
@@ -7819,12 +7814,10 @@ package Magnet_TEDS
       Modelica.Blocks.Continuous.FirstOrder firstOrder5(T=5,
         initType=Modelica.Blocks.Types.Init.NoInit,          y_start=1)
         annotation (Placement(transformation(extent={{80,70},{92,82}})));
-      Modelica.Blocks.Sources.RealExpression Valve1(y=Error1)
-        annotation (Placement(transformation(extent={{90,178},{112,200}})));
-      Modelica.Blocks.Sources.RealExpression Valve2(y=Error2)
+      Modelica.Blocks.Sources.RealExpression Valve_ch_sp(y=m_tes_charged)
+        annotation (Placement(transformation(extent={{88,178},{110,200}})));
+      Modelica.Blocks.Sources.RealExpression Valve_Heat_sp(y=m_bop_heater_demand)
         annotation (Placement(transformation(extent={{4,154},{26,176}})));
-      Modelica.Blocks.Sources.RealExpression Valve3(y=Error3)
-        annotation (Placement(transformation(extent={{90,130},{112,152}})));
       Modelica.Blocks.Sources.RealExpression Valve4(y=Error4)
         annotation (Placement(transformation(extent={{4,108},{26,130}})));
       Modelica.Blocks.Sources.RealExpression Valve6(y=Error6)
@@ -7962,7 +7955,7 @@ package Magnet_TEDS
         initType=Modelica.Blocks.Types.Init.SteadyState,
         y_start=1,
         controllerType=Modelica.Blocks.Types.SimpleController.PI,
-        yMin=0.01)
+        yMin=0.003)
         annotation (Placement(transformation(extent={{120,-100},{134,-86}})));
       Modelica.Blocks.Continuous.FirstOrder firstOrder7(
         T=5,
@@ -7970,17 +7963,17 @@ package Magnet_TEDS
         y_start=1)
         annotation (Placement(transformation(extent={{156,-98},{168,-86}})));
       Modelica.Blocks.Sources.Constant const6(k=data.T_hot_side)
-        annotation (Placement(transformation(extent={{-12,-130},{-2,-120}})));
+        annotation (Placement(transformation(extent={{-18,-126},{-8,-116}})));
       TRANSFORM.Controls.LimPID TEDS_pump_Control(
         controllerType=Modelica.Blocks.Types.SimpleController.PI,
-        k=-0.125,
+        k=-0.5,
         Ti=1,
         k_s=1,
         k_m=1,
         yMin=0,
         initType=Modelica.Blocks.Types.Init.InitialOutput,
         y_start=19376)
-        annotation (Placement(transformation(extent={{10,-132},{22,-120}})));
+        annotation (Placement(transformation(extent={{10,-132},{32,-110}})));
       TRANSFORM.Blocks.RealExpression mflow_inside_MAGNET
         "Used in the Code section. "
         annotation (Placement(transformation(extent={{-170,-10},{-146,10}})));
@@ -8011,8 +8004,8 @@ package Magnet_TEDS
         annotation (Placement(transformation(extent={{66,-104},{88,-82}})));
       TRANSFORM.Controls.LimPID PV012(
         controllerType=Modelica.Blocks.Types.SimpleController.PI,
-        k=-0.0004,
-        Ti=5,
+        k=-0.04,
+        Ti=1,
         yMax=0.999,
         yMin=0.001,
         initType=Modelica.Blocks.Types.Init.InitialOutput,
@@ -8026,6 +8019,18 @@ package Magnet_TEDS
         annotation (Placement(transformation(extent={{138,-4},{160,18}})));
       Modelica.Blocks.Sources.Constant const8(k=0.2)
         annotation (Placement(transformation(extent={{158,-50},{168,-40}})));
+      Modelica.Blocks.Sources.RealExpression Valve_ch_meas(y=
+            Charge_mass_flow_sensor.y)
+        annotation (Placement(transformation(extent={{104,162},{126,184}})));
+      Modelica.Blocks.Sources.RealExpression Valve_dch_sp(y=m_tes_discharged)
+        annotation (Placement(transformation(extent={{90,130},{112,152}})));
+      Modelica.Blocks.Sources.RealExpression Valve_dch_meas(y=
+            Discharge_mass_flow_sensor.y)
+        annotation (Placement(transformation(extent={{104,116},{126,138}})));
+      Modelica.Blocks.Sources.RealExpression Valve_Heat_meas(y=Heater_BOP_mass_flow.y)
+        annotation (Placement(transformation(extent={{24,136},{46,158}})));
+      Modelica.Blocks.Sources.Constant const2(k=1.0)
+        annotation (Placement(transformation(extent={{-26,156},{-16,166}})));
     protected
       Modelica.Blocks.Sources.Constant Tin_vc_design(k=data.T_rp_vc)
         annotation (Placement(transformation(extent={{10,-178},{22,-166}})));
@@ -8060,7 +8065,8 @@ package Magnet_TEDS
       m_tes_charged := -1*TES_Load/(Cp*(T_hot_design - T_cold_design));
 
       // Theoretical value for Glycol_HX hot side flowrate: m=Q/(c*deltaT)
-      m_bop_heater_demand :=TEDS_Heat_Load_Demand/(Cp*(T_hot_design - T_cold_design));
+      // m_bop_heater_demand := TEDS_Heat_Load_Demand/(Cp*(T_hot_design - T_cold_design));
+      m_bop_heater_demand := Heat_demand/(Cp*(T_hot_design - T_cold_design));
 
 
       // the nitrogen flow rate in "MAGNET_TEDS_simpleHX1"
@@ -8075,7 +8081,8 @@ package Magnet_TEDS
       // Will need to change this to take into account T_hot_sensor and T_Cold_Sensor.
       // Valve 3 used for TES discharge
 
-      if m_tes_discharged > 0 and delay(storage_button,15) == 0 then
+    //  if m_tes_discharged > 0 and delay(storage_button,15) == 0 then
+      if m_tes_discharged > 0 then
         Error3 :=(m_tes_discharged - Discharge_mass_flow_sensor.y)/m_tes_max;
         else
         Error3 :=-1;
@@ -8133,11 +8140,6 @@ package Magnet_TEDS
           color={239,82,82},
           pattern=LinePattern.Dash,
           thickness=0.5));
-      connect(actuatorBus.Valve_2_Opening, firstOrder1.y) annotation (Line(
-          points={{70,-215},{70,-214},{180,-214},{180,165},{94.7,165}},
-          color={239,82,82},
-          pattern=LinePattern.Dash,
-          thickness=0.5));
       connect(actuatorBus.Valve_4_Opening, firstOrder3.y) annotation (Line(
           points={{70,-215},{70,-214},{180,-214},{180,119},{94.7,119}},
           color={239,82,82},
@@ -8180,24 +8182,8 @@ package Magnet_TEDS
       connect(MAGNET_valve.y,PIDV7. u_m)
         annotation (Line(points={{87,-20},{109,-20},{109,-13.4}},
                                                              color={0,0,127}));
-      connect(Valve1.y, PIDV1.u_s)
-        annotation (Line(points={{113.1,189},{132.6,189}},
-                                                         color={0,0,127}));
-      connect(const.y, PIDV1.u_m) annotation (Line(points={{128.5,179},{141,179},{141,
-              180.6}},
-            color={0,0,127}));
-      connect(Valve2.y, PIDV2.u_s)
-        annotation (Line(points={{27.1,165},{50.6,165}},
-                                                       color={0,0,127}));
-      connect(const1.y, PIDV2.u_m) annotation (Line(points={{42.5,155},{42.5,154},{59,
-              154},{59,156.6}},
-                              color={0,0,127}));
-      connect(Valve3.y, PIDV3.u_s)
-        annotation (Line(points={{113.1,141},{134.6,141}},
-                                                       color={0,0,127}));
-      connect(const2.y, PIDV3.u_m) annotation (Line(points={{128.5,131},{128.5,130},
-              {143,130},{143,132.6}},
-                              color={0,0,127}));
+      connect(Valve_Heat_sp.y, PIDV2.u_s)
+        annotation (Line(points={{27.1,165},{50.6,165}}, color={0,0,127}));
       connect(Valve4.y, PIDV4.u_s)
         annotation (Line(points={{27.1,119},{44.6,119}},
                                                        color={0,0,127}));
@@ -8255,8 +8241,9 @@ package Magnet_TEDS
           pattern=LinePattern.Dash,
           thickness=0.5));
 
-      connect(const6.y, TEDS_pump_Control.u_s) annotation (Line(points={{-1.5,-125},
-              {-1.5,-126},{8.8,-126}}, color={0,0,127}));
+      connect(const6.y, TEDS_pump_Control.u_s) annotation (Line(points={{-7.5,-121},
+              {-7.5,-124},{4,-124},{4,-121},{7.8,-121}},
+                                       color={0,0,127}));
       connect(const7.y, PIDV7.u_s) annotation (Line(points={{78.5,-5},{89.55,-5},{89.55,
               -5},{100.6,-5}}, color={0,0,127}));
       connect(PIDV7.y, switch3.u1) annotation (Line(points={{116.7,-5},{126.4,-5},{126.4,
@@ -8264,7 +8251,8 @@ package Magnet_TEDS
       connect(GT_Power_generated.y, PIDV8.u_m) annotation (Line(points={{111.1,-113},
               {127,-113},{127,-101.4}}, color={0,0,127}));
       connect(T_TEDSide_out.y, TEDS_pump_Control.u_m) annotation (Line(points={{-0.9,
-              -143},{16,-143},{16,-133.2}}, color={0,0,127}));
+              -143},{-0.9,-144},{21,-144},{21,-134.2}},
+                                            color={0,0,127}));
       connect(T_vc_out.y, N2_mf_control.u_m) annotation (Line(points={{107.1,-157},{
               160,-157},{160,-153.6}}, color={0,0,127}));
       connect(T_vc_in.y, cw_mf_control.u_m) annotation (Line(points={{7.1,-185},{54,
@@ -8322,8 +8310,7 @@ package Magnet_TEDS
           pattern=LinePattern.Dash,
           thickness=0.5));
       connect(actuatorBus.Pump_Flow, TEDS_pump_Control.y) annotation (Line(
-          points={{70,-215},{72,-215},{72,-214},{180,-214},{180,-126},{22.6,
-              -126}},
+          points={{70,-215},{70,-121},{33.1,-121}},
           color={239,82,82},
           pattern=LinePattern.Dash,
           thickness=0.5));
@@ -8361,6 +8348,22 @@ package Magnet_TEDS
       connect(actuatorBus.MAGNET_valve_opening, const8.y) annotation (Line(
           points={{70,-215},{70,-214},{180,-214},{180,-46},{172,-46},{172,-45},{168.5,
               -45}},
+          color={239,82,82},
+          pattern=LinePattern.Dash,
+          thickness=0.5));
+      connect(Valve_ch_sp.y, PIDV1.u_s)
+        annotation (Line(points={{111.1,189},{132.6,189}}, color={0,0,127}));
+      connect(Valve_ch_meas.y, PIDV1.u_m) annotation (Line(points={{127.1,173},{141,
+              173},{141,180.6}}, color={0,0,127}));
+      connect(Valve_dch_sp.y, PIDV3.u_s)
+        annotation (Line(points={{113.1,141},{134.6,141}}, color={0,0,127}));
+      connect(Valve_dch_meas.y, PIDV3.u_m) annotation (Line(points={{127.1,127},{143,
+              127},{143,132.6}}, color={0,0,127}));
+      connect(Valve_Heat_meas.y, PIDV2.u_m) annotation (Line(points={{47.1,147},{59,
+              147},{59,156.6}}, color={0,0,127}));
+      connect(actuatorBus.Valve_2_Opening, const2.y) annotation (Line(
+          points={{70,-215},{70,-110},{58,-110},{58,22},{-14,22},{-14,152},{-12,152},
+              {-12,161},{-15.5,161}},
           color={239,82,82},
           pattern=LinePattern.Dash,
           thickness=0.5));

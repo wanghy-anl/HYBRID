@@ -666,9 +666,9 @@ public
   TRANSFORM.Fluid.Sensors.MassFlowRate FM_201(redeclare package Medium =
         TRANSFORM.Media.Fluids.Therminol_66.LinearTherminol66_A_250C, precision
       =3) annotation (Placement(transformation(
-        extent={{-9,9},{9,-9}},
+        extent={{9,9},{-9,-9}},
         rotation=-90,
-        origin={419,-239})));
+        origin={419,-241})));
   TRANSFORM.Fluid.Sensors.MassFlowRate FM_202(redeclare package Medium =
         TRANSFORM.Media.Fluids.Therminol_66.LinearTherminol66_A_250C, precision
       =3) annotation (Placement(transformation(
@@ -785,18 +785,18 @@ public
     T_cold_design=498.15)
     annotation (Placement(transformation(extent={{362,2},{396,36}})));
   Modelica.Blocks.Sources.Pulse          TEDS_Heat_Demand_kW(
-    amplitude=-70,
+    amplitude=10,
     period=7200,
-    offset=80,
-    startTime=1e4)
+    offset=25,
+    startTime=3600)
     annotation (Placement(transformation(extent={{282,-158},{296,-144}})));
   Modelica.Blocks.Math.Gain TEDS_Heat_Demand_W(k=1000)
     annotation (Placement(transformation(extent={{306,-156},{316,-146}})));
   Modelica.Blocks.Sources.Pulse    PCU_Elec_Demand_kW(
-    amplitude=0,
+    amplitude=5,
     period=7200,
-    offset=5,
-    startTime=3600)
+    offset=10,
+    startTime=1e4)
     annotation (Placement(transformation(extent={{282,-186},{296,-172}})));
   Modelica.Blocks.Math.Gain PCU_Elec_Demand_W(k=1000)
     annotation (Placement(transformation(extent={{306,-184},{316,-174}})));
@@ -1091,26 +1091,6 @@ equation
   connect(PV_006.port_b,sensor_m_flow2. port_a)
     annotation (Line(points={{472,-52},{562,-52},{562,-70}},
                                                           color={0,127,255}));
-  connect(PV_051.port_a, FM_201.port_b) annotation (Line(points={{418,-254},{
-          419,-254},{419,-248}}, color={0,127,255}));
-  connect(actuatorSubBus.Valve_4_Opening, PV_052.opening) annotation (Line(
-      points={{335,-22},{536,-22},{536,-240},{492.8,-240}},
-      color={239,82,82},
-      pattern=LinePattern.Dash,
-      thickness=0.5), Text(
-      string="%first",
-      index=-1,
-      extent={{6,3},{6,3}},
-      horizontalAlignment=TextAlignment.Left));
-  connect(actuatorSubBus.Valve_5_Opening, PV_051.opening) annotation (Line(
-      points={{335,-22},{360,-22},{360,-268},{404,-268},{404,-260},{413.2,-260}},
-      color={239,82,82},
-      pattern=LinePattern.Dash,
-      thickness=0.5), Text(
-      string="%first",
-      index=-1,
-      extent={{-6,3},{-6,3}},
-      horizontalAlignment=TextAlignment.Right));
 
   connect(actuatorSubBus.Valve_6_Opening, PV_004.opening) annotation (Line(
       points={{335,-22},{360,-22},{360,-260},{272,-260},{272,-285.2}},
@@ -1127,8 +1107,6 @@ equation
     annotation (Line(points={{488,-94},{488,-100}}, color={0,127,255}));
   connect(m_Chg_In.port_b, T_Chg_In.port_a)
     annotation (Line(points={{418,-94},{418,-100}}, color={0,127,255}));
-  connect(FM_201.port_a, T_Dch_In.port_a)
-    annotation (Line(points={{419,-230},{419,-229}}, color={0,127,255}));
 
   connect(sensorSubBus.Charging_flowrate, FM_202.m_flow) annotation (Line(
       points={{303,-22},{536,-22},{536,-256},{491.6,-256},{491.6,-255}},
@@ -1261,16 +1239,6 @@ equation
       color={239,82,82},
       pattern=LinePattern.Dash,
       thickness=0.5));
-  connect(actuatorSubBus.Valve_1_Opening, PV_049.opening) annotation (Line(
-      points={{335,-22},{360,-22},{360,-66},{413.2,-66}},
-      color={239,82,82},
-      pattern=LinePattern.Dash,
-      thickness=0.5));
-  connect(actuatorSubBus.Valve_3_Opening, PV_050.opening) annotation (Line(
-      points={{335,-22},{508,-22},{508,-66},{492.8,-66}},
-      color={239,82,82},
-      pattern=LinePattern.Dash,
-      thickness=0.5));
   connect(actuatorSubBus.Valve_2_Opening, PV_006.opening) annotation (Line(
       points={{335,-22},{466,-22},{466,-47.2}},
       color={239,82,82},
@@ -1365,7 +1333,7 @@ equation
   connect(PV_051.port_b, P_001.port_b) annotation (Line(points={{418,-266},{418,
           -276},{314,-276},{314,-290},{328,-290}}, color={0,127,255}));
   connect(sensorSubBus.Discharge_FlowRate, FM_201.m_flow) annotation (Line(
-      points={{303,-22},{360,-22},{360,-240},{388,-240},{388,-239},{415.76,-239}},
+      points={{303,-22},{303,-108},{396,-108},{396,-241},{415.76,-241}},
       color={111,216,99},
       pattern=LinePattern.Dash,
       thickness=0.5), Text(
@@ -1378,10 +1346,34 @@ equation
     annotation (Line(points={{296.7,-179},{305,-179}}, color={0,0,127}));
   connect(TEDS_Heat_Demand_kW.y, TEDS_Heat_Demand_W.u)
     annotation (Line(points={{296.7,-151},{305,-151}}, color={0,0,127}));
+  connect(actuatorSubBus.Valve_4_Opening, PV_049.opening) annotation (Line(
+      points={{335,-22},{335,-76},{396,-76},{396,-66},{413.2,-66}},
+      color={239,82,82},
+      pattern=LinePattern.Dash,
+      thickness=0.5));
+  connect(actuatorSubBus.Valve_1_Opening, PV_052.opening) annotation (Line(
+      points={{335,-22},{335,-24},{512,-24},{512,-240},{492.8,-240}},
+      color={239,82,82},
+      pattern=LinePattern.Dash,
+      thickness=0.5));
+  connect(actuatorSubBus.Valve_5_Opening, PV_050.opening) annotation (Line(
+      points={{335,-22},{335,-24},{508,-24},{508,-66},{492.8,-66}},
+      color={239,82,82},
+      pattern=LinePattern.Dash,
+      thickness=0.5));
+  connect(actuatorSubBus.Valve_3_Opening, PV_051.opening) annotation (Line(
+      points={{335,-22},{335,-248},{400,-248},{400,-260},{413.2,-260}},
+      color={239,82,82},
+      pattern=LinePattern.Dash,
+      thickness=0.5));
+  connect(T_Dch_In.port_a, FM_201.port_b)
+    annotation (Line(points={{419,-229},{419,-232}}, color={0,127,255}));
+  connect(PV_051.port_a, FM_201.port_a) annotation (Line(points={{418,-254},{
+          419,-254},{419,-250}}, color={0,127,255}));
   annotation (experiment(
-      StopTime=50400,
+      StopTime=86400,
       Interval=10,
-      __Dymola_Algorithm="Esdirk45a"),
+      __Dymola_Algorithm="Dassl"),
     Diagram(coordinateSystem(extent={{-260,-420},{580,60}})),
     Icon(coordinateSystem(extent={{-260,-420},{580,60}})));
 end TEDS_MAGNET_Integration_GT_0_1_bypass;
