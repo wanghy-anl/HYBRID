@@ -1,5 +1,5 @@
 within NHES.ExperimentalSystems.MAGNET_TEDS;
-model TEDS_MAGNET_Integration_GT_0_1_bypass
+model TEDS_MAGNET_Integration_GT_0_1_bypass_FMU2
   "Dynamic simulation of the integrated system of MAGNET, TEDS, and Gas turbine with a central control system"
   extends TRANSFORM.Icons.Example;
 
@@ -612,8 +612,8 @@ public
         extent={{-10,-10},{10,10}},
         rotation=-90,
         origin={238,76})));
-  TRANSFORM.Fluid.Sensors.MassFlowRate sensor_m_flow2(redeclare package Medium =
-        TRANSFORM.Media.Fluids.Therminol_66.LinearTherminol66_A_250C, precision=
+  TRANSFORM.Fluid.Sensors.MassFlowRate sensor_m_flow2(redeclare package Medium
+      = TRANSFORM.Media.Fluids.Therminol_66.LinearTherminol66_A_250C, precision=
        3) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=-90,
@@ -699,26 +699,26 @@ public
         extent={{10,-10},{-10,10}},
         rotation=-90,
         origin={308,76})));
-  TRANSFORM.Fluid.Sensors.TemperatureTwoPort T_Chg_Out(redeclare package Medium =
-        TRANSFORM.Media.Fluids.Therminol_66.LinearTherminol66_A_250C, precision
+  TRANSFORM.Fluid.Sensors.TemperatureTwoPort T_Chg_Out(redeclare package Medium
+      = TRANSFORM.Media.Fluids.Therminol_66.LinearTherminol66_A_250C, precision
       =3) annotation (Placement(transformation(
         extent={{-9,10},{9,-10}},
         rotation=90,
         origin={308,-59})));
-  TRANSFORM.Fluid.Sensors.TemperatureTwoPort T_Chg_In(redeclare package Medium =
-        TRANSFORM.Media.Fluids.Therminol_66.LinearTherminol66_A_250C, precision
+  TRANSFORM.Fluid.Sensors.TemperatureTwoPort T_Chg_In(redeclare package Medium
+      = TRANSFORM.Media.Fluids.Therminol_66.LinearTherminol66_A_250C, precision
       =3) annotation (Placement(transformation(
         extent={{-10,10},{10,-10}},
         rotation=-90,
         origin={238,50})));
-  TRANSFORM.Fluid.Sensors.TemperatureTwoPort T_Dch_Out(redeclare package Medium =
-        TRANSFORM.Media.Fluids.Therminol_66.LinearTherminol66_A_250C, precision
+  TRANSFORM.Fluid.Sensors.TemperatureTwoPort T_Dch_Out(redeclare package Medium
+      = TRANSFORM.Media.Fluids.Therminol_66.LinearTherminol66_A_250C, precision
       =3) annotation (Placement(transformation(
         extent={{-10,10},{10,-10}},
         rotation=90,
         origin={308,50})));
-  TRANSFORM.Fluid.Sensors.TemperatureTwoPort T_Dch_In(redeclare package Medium =
-        TRANSFORM.Media.Fluids.Therminol_66.LinearTherminol66_A_250C, precision
+  TRANSFORM.Fluid.Sensors.TemperatureTwoPort T_Dch_In(redeclare package Medium
+      = TRANSFORM.Media.Fluids.Therminol_66.LinearTherminol66_A_250C, precision
       =3) annotation (Placement(transformation(
         extent={{-9.5,-8.5},{9.5,8.5}},
         rotation=90,
@@ -771,31 +771,18 @@ public
     use_input=true,
     p_nominal=system.p_ambient + 1e4)
     annotation (Placement(transformation(extent={{164,-138},{148,-122}})));
-  Magnet_TEDS.MAGNET_TEDS_ControlSystem.Control_System_Therminol_4_element_all_modes_MAGNET_GT_dyn_0_1_bypass
+  Magnet_TEDS.MAGNET_TEDS_ControlSystem.Control_System_Therminol_4_element_all_modes_MAGNET_GT_dyn_0_1_bypass_FMU2
     control_System_Therminol_4_element_all_modes_MAGNET_GT_dyn_0_1_HW(
     redeclare package Medium =
         TRANSFORM.Media.Fluids.Therminol_66.LinearTherminol66_A_250C,
-    TEDS_Heat_Load_Demand=TEDS_Heat_Demand_W.y,
+    m_tes_charged_input=m_tes_charged.y,
+    m_tes_discharged_input=m_tes_discharged.y,
     Gas_Turbine_Elec_Demand=PCU_Elec_Demand_W.y,
     T_hot_design=598.15,
     T_cold_design=498.15)
     annotation (Placement(transformation(extent={{222,162},{256,196}})));
-  Modelica.Blocks.Sources.Pulse          TEDS_Heat_Demand_kW(
-    amplitude=15,
-    period=7200,
-    offset=35.59071,
-    startTime=10800)
-    annotation (Placement(transformation(extent={{100,26},{114,40}})));
-  Modelica.Blocks.Math.Gain TEDS_Heat_Demand_W(k=1000)
-    annotation (Placement(transformation(extent={{124,28},{134,38}})));
-  Modelica.Blocks.Sources.Pulse    PCU_Elec_Demand_kW(
-    amplitude=5,
-    period=7200,
-    offset=5,
-    startTime=5400)
-    annotation (Placement(transformation(extent={{100,66},{114,80}})));
   Modelica.Blocks.Math.Gain PCU_Elec_Demand_W(k=1000)
-    annotation (Placement(transformation(extent={{124,68},{134,78}})));
+    annotation (Placement(transformation(extent={{-104,194},{-92,206}})));
   TRANSFORM.Fluid.Sensors.TemperatureTwoPort TC_201(redeclare package Medium =
         TRANSFORM.Media.Fluids.Therminol_66.LinearTherminol66_A_250C, precision
       =3) annotation (Placement(transformation(
@@ -967,11 +954,58 @@ public
   Modelica.Blocks.Interfaces.RealOutput FM_003_m annotation (Placement(
         transformation(extent={{180,-66},{204,-42}}), iconTransformation(extent
           ={{128,68},{152,92}})));
+  Modelica.Blocks.Math.Add add_Elec
+    annotation (Placement(transformation(extent={{-140,190},{-120,210}})));
+  Modelica.Blocks.Interfaces.RealInput PCU_Elec_Demand_kW annotation (Placement(
+        transformation(
+        extent={{-12,-12},{12,12}},
+        rotation=0,
+        origin={-178,206}), iconTransformation(extent={{-120,48},{-96,72}})));
+  Modelica.Blocks.Sources.Pulse pulse_Elec(
+    amplitude=5,
+    period=7200,
+    offset=5,
+    startTime=5400)
+    annotation (Placement(transformation(extent={{-164,186},{-150,200}})));
+  Modelica.Blocks.Math.Add add_m_tes_chg
+    annotation (Placement(transformation(extent={{-140,150},{-120,170}})));
+  Modelica.Blocks.Sources.Pulse pulse_m_tes_chg(
+    amplitude=0.02,
+    period=7200,
+    offset=0,
+    startTime=10800)
+    annotation (Placement(transformation(extent={{-164,146},{-150,160}})));
+  Modelica.Blocks.Interfaces.RealInput m_tes_chg annotation (Placement(
+        transformation(
+        extent={{-12,-12},{12,12}},
+        rotation=0,
+        origin={-178,166}), iconTransformation(extent={{-120,48},{-96,72}})));
+  Modelica.Blocks.Math.Gain m_tes_charged(k=1)
+    annotation (Placement(transformation(extent={{-104,154},{-92,166}})));
+  Modelica.Blocks.Math.Add add_m_tes_dch
+    annotation (Placement(transformation(extent={{-20,150},{0,170}})));
+  Modelica.Blocks.Sources.Pulse pulse_m_tes_dch(
+    amplitude=0.02,
+    period=7200,
+    offset=0,
+    startTime=14400)
+    annotation (Placement(transformation(extent={{-44,146},{-30,160}})));
+  Modelica.Blocks.Math.Gain m_tes_discharged(k=1)
+    annotation (Placement(transformation(extent={{16,154},{28,166}})));
+  Modelica.Blocks.Interfaces.RealInput m_tes_dch annotation (Placement(
+        transformation(
+        extent={{-12,-12},{12,12}},
+        rotation=0,
+        origin={-58,166}), iconTransformation(extent={{-120,48},{-96,72}})));
+  Modelica.Blocks.Interfaces.RealOutput Q_MT_HX annotation (Placement(
+        transformation(extent={{180,-86},{204,-62}}), iconTransformation(extent
+          ={{128,68},{152,92}})));
 equation
   TC_003_Temp=TC_003.T;
   TC_201_Temp=TC_201.T;
   Glycol_Exit_Temp=Ethylene_glycol_exit_temperature.T;
   FM_003_m=FM_003.m_flow;
+  Q_MT_HX=MAGNET_TEDS_simpleHX1.Q_flow;
   connect(sensor_hx_cw.port_b,boundary. ports[1])
     annotation (Line(points={{-28,-80},{12,-80}},
                                                color={0,127,255}));
@@ -1345,10 +1379,6 @@ equation
       extent={{-6,3},{-6,3}},
       horizontalAlignment=TextAlignment.Right));
 
-  connect(PCU_Elec_Demand_kW.y, PCU_Elec_Demand_W.u)
-    annotation (Line(points={{114.7,73},{123,73}},     color={0,0,127}));
-  connect(TEDS_Heat_Demand_kW.y, TEDS_Heat_Demand_W.u)
-    annotation (Line(points={{114.7,33},{123,33}},     color={0,0,127}));
   connect(actuatorSubBus.Valve_4_Opening, PV_049.opening) annotation (Line(
       points={{195,138},{156,138},{156,94},{233.2,94}},
       color={239,82,82},
@@ -1375,10 +1405,28 @@ equation
           -94},{239,-90}},       color={0,127,255}));
   connect(pipe2.port_a, tank1.port_b)
     annotation (Line(points={{212,108},{197,108}}, color={0,127,255}));
+  connect(PCU_Elec_Demand_kW, add_Elec.u1)
+    annotation (Line(points={{-178,206},{-142,206}}, color={0,0,127}));
+  connect(add_Elec.y, PCU_Elec_Demand_W.u)
+    annotation (Line(points={{-119,200},{-105.2,200}}, color={0,0,127}));
+  connect(add_Elec.u2, pulse_Elec.y) annotation (Line(points={{-142,194},{-149.3,
+          194},{-149.3,193}}, color={0,0,127}));
+  connect(m_tes_chg, add_m_tes_chg.u1)
+    annotation (Line(points={{-178,166},{-142,166}}, color={0,0,127}));
+  connect(add_m_tes_chg.u2, pulse_m_tes_chg.y) annotation (Line(points={{-142,154},
+          {-149.3,154},{-149.3,153}}, color={0,0,127}));
+  connect(add_m_tes_chg.y, m_tes_charged.u)
+    annotation (Line(points={{-119,160},{-105.2,160}}, color={0,0,127}));
+  connect(m_tes_dch, add_m_tes_dch.u1)
+    annotation (Line(points={{-58,166},{-22,166}}, color={0,0,127}));
+  connect(add_m_tes_dch.u2, pulse_m_tes_dch.y) annotation (Line(points={{-22,154},
+          {-29.3,154},{-29.3,153}}, color={0,0,127}));
+  connect(add_m_tes_dch.y, m_tes_discharged.u)
+    annotation (Line(points={{1,160},{14.8,160}}, color={0,0,127}));
   annotation (experiment(
       StopTime=86400,
       Interval=10,
       __Dymola_Algorithm="Esdirk45a"),
     Diagram(coordinateSystem(extent={{-380,-220},{380,220}})),
     Icon(coordinateSystem(extent={{-380,-220},{380,220}})));
-end TEDS_MAGNET_Integration_GT_0_1_bypass;
+end TEDS_MAGNET_Integration_GT_0_1_bypass_FMU2;
